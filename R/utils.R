@@ -1,4 +1,3 @@
-
 #' @title Reorder dataset columns by variable or location grouping
 #'
 #' @description Reorganizes columns of a dataset that follows a "variable.location"
