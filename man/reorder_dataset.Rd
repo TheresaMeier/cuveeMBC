@@ -11,7 +11,7 @@ reorder_dataset(
 )
 }
 \arguments{
-\item{data}{Data frame with columns named as "variable.location", e.g. "tas.1" or "tas.loc1"}
+\item{data}{Data frame with columns named as "variable.location_id", e.g. "tas.1" or "tas.loc1"}
 
 \item{direction}{Reordering strategy: "variable-major" or "location-major"}
 
@@ -21,7 +21,7 @@ reorder_dataset(
 Data frame with columns reordered according to the selected strategy
 }
 \description{
-Reorganizes columns of a dataset that follows a "variable.location"
+Reorganizes columns of a dataset that follows a "variable.location_id"
 naming convention (e.g. "tas.1", "tas.2", "pr.1" etc.). The function allows
 switching between variable-major and location-major layouts.
 
