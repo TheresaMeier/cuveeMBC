@@ -10,7 +10,7 @@ merge_edges_individual_full(rvs_level1, rvs_level2, bridge_var)
 \item{rvs_level1}{List of R-vine structure objects for spatial dependence
 (one structure per variable)}
 
-\item{rvs_level2}{List of R-vine structure objects for inter-variable dependence}
+\item{rvs_level2}{R-vine structure object for inter-variable dependence}
 
 \item{bridge_var}{Integer. Location index used to connect the hierarchies.}
 }

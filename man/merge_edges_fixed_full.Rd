@@ -7,9 +7,9 @@
 merge_edges_fixed_full(rvs_level1, rvs_level2, bridge_var)
 }
 \arguments{
-\item{rvs_level1}{R-vine structure object for spatial dependence (single structure)}
+\item{rvs_level1}{R-vine structure object for spatial dependence (to be replicated)}
 
-\item{rvs_level2}{R-vine structure object for inter-variable dependence (to be replicated)}
+\item{rvs_level2}{R-vine structure object for inter-variable dependence (single structure)}
 
 \item{bridge_var}{Integer. Location index used to connect the two hierarchies.}
 }
