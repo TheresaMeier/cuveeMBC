@@ -17,4 +17,5 @@ Imports:
     lubridate,
     Matrix,
     rvinecopulib,
-    tidyr
+    tidyr,
+    wdm
