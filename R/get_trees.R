@@ -84,3 +84,78 @@ get_spatial_mask <- function(rows, cols, ids = NULL) {
 
   return(adj_matrix)
 }
+
+
+
+#' @title Convert a spanning tree into an R-vine structure
+#' @description
+#' Transforms a graph-theoretic spanning tree into an R-vine structure
+#' representation.
+#'
+#'  The function:
+#'    1. Performs a breadth-first search (BFS) to determine an ordering
+#'    2. Traverses edges in BFS order
+#'    3. Extracts a valid first-tree structure for an R-vine
+#'
+#' @param spanning_tree An igraph object representing a spanning tree
+#'
+#' @returns An R-vine structure object containing:
+#'  - the variable order
+#'  - the first-tree edge structure
+#' @export
+#'
+#' @details Assumes the spanning tree is connected and uses node 1 as the BFS root
+#'
+spanning_tree_to_rvine_structure <- function(spanning_tree) {
+
+  # Check if graph is connected, otherwise error
+  if (!igraph::is_connected(spanning_tree)) {
+    stop("Input spanning_tree must be a connected graph.")
+  }
+  # Compute BFS ordering of nodes starting from root = 1
+  # This defines the variable order for the R-vine
+  order <- igraph::bfs(spanning_tree, root = 1, order = TRUE)$order
+
+  # Extract edge list from the spanning tree
+  edges <- igraph::as_edgelist(spanning_tree, names = FALSE)
+
+  # Initialize vector to store first-tree structure
+  # Length equals number of edges in the spanning tree
+  row1 <- rep(NA, nrow(edges))
+
+  # Track which edges have already been assigned
+  edge_used <- logical(nrow(edges))
+
+  # Position counter for row1
+  j <- 1
+
+  # Traverse nodes in BFS order
+  for (i in order) {
+
+    # Find unused edges where current node appears as first endpoint
+    ind_i <- which(edges[, 1] == i & !edge_used)
+    for (k in ind_i) {
+      row1[j] <- edges[k, 1]
+      edge_used[k] <- TRUE
+      j <- j + 1
+    }
+
+    # Find unused edges where current node appears as second endpoint
+    ind_i_2 <- which(edges[, 2] == i & !edge_used)
+    for (k in ind_i_2) {
+      row1[j] <- edges[k, 2]
+      edge_used[k] <- TRUE
+      j <- j + 1
+    }
+  }
+
+  # Construct R-vine structure:
+  # - Reverse order to match vinecopulib conventions
+  # - First tree is given by row1
+  rvine_struct <- rvinecopulib::rvine_structure(
+    order = rev(as.vector(order)),
+    struct_array = list(rev(row1))
+  )
+
+  return(rvine_struct)
+}

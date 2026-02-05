@@ -40,3 +40,53 @@ test_that("spatial grid derivation works", {
   expect_equal(dim(sub_mask), c(length(ids), length(ids)))
   expect_equal(sub_mask, full_mask[ids, ids])
 })
+
+test_that("spanning_tree_to_rvine_structure returns valid R-vine structure", {
+
+  set.seed(1)
+  g <- igraph::make_tree(5, children = 2, mode = "undirected")
+
+  rvs <- spanning_tree_to_rvine_structure(g)
+
+  expect_s3_class(rvs, "rvine_structure")
+  expect_equal(rvs$d, igraph::vcount(g))
+
+  # Function errors for disconnected graph
+  g <- igraph::make_graph(c(1, 2, 2, 3, 3, 4, 5, 6), directed = FALSE)
+
+  expect_error(
+    spanning_tree_to_rvine_structure(g),
+    "Input spanning_tree must be a connected graph."
+  )
+
+
+  # R-vine order is a permutation of graph nodes
+  g <- igraph::make_tree(6, children = 2, mode = "undirected")
+
+  rvs <- spanning_tree_to_rvine_structure(g)
+
+  expect_equal(
+    sort(rvs$order),
+    seq_len(igraph::vcount(g))
+  )
+
+  # First-tree structure has correct size and nodes
+  rvs <- spanning_tree_to_rvine_structure(g)
+
+  first_tree <- rvs$struct_array[[1]]
+
+  expect_equal(length(first_tree), igraph::vcount(g) - 1)
+  expect_true(all(first_tree %in% seq_len(igraph::vcount(g))))
+
+
+  # Known small tree produces expected R-vine structure
+  g <- igraph::make_graph(
+    edges = c(1,2, 2,3, 2,4),
+    directed = FALSE
+  )
+
+  rvs <- spanning_tree_to_rvine_structure(g)
+
+  expect_equal(sort(rvs$order), 1:4)
+  expect_equal(length(rvs$struct_array[[1]]), 3)
+})
